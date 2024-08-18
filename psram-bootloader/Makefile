@@ -1,4 +1,4 @@
-.PHONY: all clean flash picotool
+.PHONY: all clean flash picotool demo flash-demo
 
 all: build/Makefile
 	@$(MAKE) -C build
@@ -33,5 +33,14 @@ else
 	@$(MAKE) picotool PICOTOOL_ARGS="load -fx build/psram-bootloader.uf2"
 endif
 
+# make CROSS_COMPILE=riscv32-unknown-elf- LD=riscv64-linux-gnu-ld demo
+demo: | build
+	@$(MAKE) -C demo
+
+flash-demo: demo flash
+	sleep 2
+	@$(MAKE) picotool PICOTOOL_ARGS="load -fxp 0 build/demo.bin"
+
 clean:
+	@$(MAKE) -C demo clean
 	rm -rf build
